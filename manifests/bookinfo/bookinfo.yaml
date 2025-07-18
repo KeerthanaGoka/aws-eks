@@ -131,7 +131,7 @@ spec:
 ##################################################################################################
 # Reviews service
 ##################################################################################################
-apiVersion: v1
+apiVersion: v2
 kind: Service
 metadata:
   name: reviews
@@ -145,7 +145,7 @@ spec:
   selector:
     app: reviews
 ---
-apiVersion: v1
+apiVersion: v2
 kind: ServiceAccount
 metadata:
   name: bookinfo-reviews
