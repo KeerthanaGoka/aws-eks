@@ -5,7 +5,7 @@
 terraform init
 terraform apply --auto-approve
 
-kubectl apply -f terraform\manifests\karpenter.yaml
+kubectl apply -f manifests\karpenter.yaml
 kubectl rollout restart deployment istio-ingress -n istio-ingress
 
 
@@ -26,7 +26,9 @@ kubectl port-forward svc/prometheus 9090:9090 -n istio-system
 
 # Visualize metrics in using Grafana
 kubectl port-forward svc/grafana 3000:3000 -n istio-system
+http://localhost:3000
 
+    
 # Visualize application traces via Jaeger
 kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 
@@ -34,6 +36,20 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 #Istio sidecar injection
 
 kubectl label namespace default istio-injection=enabled
+
+#ArgoCD
+
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm install argocd argo/argo-cd -n argocd --create-namespace
+
+http://localhost:8080
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+
+admin
+9gn4GV-mvJhBpJPP
+
+kubectl apply -f argocd/shopping-application.yaml
 
 
 #Microservices deploy:
@@ -48,4 +64,63 @@ helm install mesh-basic ./microservices-chart -n default
 
 terraform destroy -target='module.eks_blueprints_addons.helm_release.this["istio-ingress"]' -auto-approve
 
+#Patch the deployment directly and add the missing toleration
+kubectl patch deployment aws-load-balancer-controller \
+  -n kube-system \
+  --type='json' \
+  -p='[
+    {
+      "op": "add",
+      "path": "/spec/template/spec/tolerations",
+      "value": [
+        {
+          "key": "karpenter.sh/controller",
+          "operator": "Equal",
+          "value": "true",
+          "effect": "NoSchedule"
+        }
+      ]
+    }
+  ]'
 
+# Add toleration to istio-system components
+for DEPLOY in istiod grafana jaeger kiali prometheus; do
+  kubectl -n istio-system patch deployment $DEPLOY \
+    --type='json' \
+    -p='[
+      {
+        "op": "add",
+        "path": "/spec/template/spec/tolerations",
+        "value": [
+          {
+            "key": "karpenter.sh/controller",
+            "operator": "Equal",
+            "value": "true",
+            "effect": "NoSchedule"
+          }
+        ]
+      }
+    ]'
+done
+
+# Add toleration to istio-ingress component
+kubectl -n istio-ingress patch deployment istio-ingress \
+  --type='json' \
+  -p='[
+    {
+      "op": "add",
+      "path": "/spec/template/spec/tolerations",
+      "value": [
+        {
+          "key": "karpenter.sh/controller",
+          "operator": "Equal",
+          "value": "true",
+          "effect": "NoSchedule"
+        }
+      ]
+    }
+  ]'
+
+
+kubectl taint nodes ip-10-0-0-71.ec2.internal karpenter.sh/controller:NoSchedule-
+kubectl taint nodes ip-10-0-19-115.ec2.internal karpenter.sh/controller:NoSchedule-
