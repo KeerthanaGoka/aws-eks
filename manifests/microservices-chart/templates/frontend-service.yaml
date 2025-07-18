@@ -9,13 +9,14 @@ metadata:
   labels:
     app: frontend
 spec:
+  
   ports:
     - name: "http"
       port: 9000
       targetPort: 9000
   selector:
     app: frontend
-
+---
 apiVersion: v1
 kind: Service
 metadata:
