@@ -203,6 +203,13 @@ spec:
           value: "/tmp/logs"
         ports:
         - containerPort: 9080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
         volumeMounts:
         - name: tmp
           mountPath: /tmp
@@ -214,13 +221,7 @@ spec:
       - name: tmp
         emptyDir: {}
 
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 200m
-            memory: 256Mi
+ 
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -254,6 +255,13 @@ spec:
           value: "/tmp/logs"
         ports:
         - containerPort: 9080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
         volumeMounts:
         - name: tmp
           mountPath: /tmp
@@ -264,13 +272,7 @@ spec:
         emptyDir: {}
       - name: tmp
         emptyDir: {}
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 200m
-            memory: 256Mi
+        
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -380,13 +382,6 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
-                
-        volumeMounts:
-        - name: tmp
-          mountPath: /tmp
-      volumes:
-      - name: tmp
-        emptyDir: {}
         resources:
           requests:
             cpu: 100m
@@ -394,4 +389,12 @@ spec:
           limits:
             cpu: 200m
             memory: 256Mi
+                
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+
 ---
