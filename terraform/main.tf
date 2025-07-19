@@ -255,6 +255,29 @@ module "eks_blueprints_addons" {
         )
       ]
     }
+
+    argocd = {
+      name             = "argocd"
+      namespace        = "argocd"
+      chart            = "argo-cd"
+      repository       = "https://argoproj.github.io/argo-helm"
+      version          = "5.51.6" # use the latest available if needed
+      create_namespace = true
+
+      values = [
+        yamlencode({
+          tolerations = [{
+            key      = "karpenter.sh/controller"
+            operator = "Equal"
+            value    = "true"
+            effect   = "NoSchedule"
+          }]
+          nodeSelector = {
+            "karpenter.sh/controller" = "true"
+          }
+        })
+      ]
+    }
   }
 
   tags = local.tags
