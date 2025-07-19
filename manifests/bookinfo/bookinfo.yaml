@@ -295,3 +295,31 @@ spec:
         emptyDir: {}
 
 ---
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: productpage
+  namespace: default  # use the namespace where productpage is deployed
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - productapp-gateway
+  http:
+    - match:
+        - uri:
+            exact: /productpage
+        - uri:
+            prefix: /static
+        - uri:
+            prefix: /login
+        - uri:
+            prefix: /logout
+        - uri:
+            prefix: /api/v1/products
+      route:
+        - destination:
+            host: productpage
+            port:
+              number: 9080
