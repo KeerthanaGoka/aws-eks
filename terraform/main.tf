@@ -43,15 +43,15 @@ module "eks" {
   cluster_addons = {
     coredns = {
       configuration_values = jsonencode({
-        tolerations = [
-          # Allow CoreDNS to run on the same nodes as the Karpenter controller
-          # for use during cluster creation when Karpenter nodes do not yet exist
-          {
-            key    = "karpenter.sh/controller"
-            value  = "true"
-            effect = "NoSchedule"
-          }
-        ]
+        # tolerations = [
+        #   # Allow CoreDNS to run on the same nodes as the Karpenter controller
+        #   # for use during cluster creation when Karpenter nodes do not yet exist
+        #   {
+        #     key    = "karpenter.sh/controller"
+        #     value  = "true"
+        #     effect = "NoSchedule"
+        #   }
+        # ]
       })
     }
     eks-pod-identity-agent = {}
@@ -76,15 +76,15 @@ module "eks" {
         "karpenter.sh/controller" = "true"
       }
 
-      taints = {
-        # The pods that do not tolerate this taint should run on nodes
-        # created by Karpenter
-        karpenter = {
-          key    = "karpenter.sh/controller"
-          value  = "true"
-          effect = "NO_SCHEDULE"
-        }
-      }
+      # taints = {
+      #   # The pods that do not tolerate this taint should run on nodes
+      #   # created by Karpenter
+      #   karpenter = {
+      #     key    = "karpenter.sh/controller"
+      #     value  = "true"
+      #     effect = "NO_SCHEDULE"
+      #   }
+      # }
     }
   }
 
@@ -143,6 +143,14 @@ module "eks" {
 ################################################################################
 # Helm charts -karpenter
 ################################################################################
+resource "helm_release" "kube_state_metrics" {
+  name       = "kube-state-metrics"
+  namespace  = "kube-system"
+
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-state-metrics"
+  version    = "5.18.0" # Use the latest or pin a specific version 
+}
 
 resource "helm_release" "karpenter" {
   name                = "karpenter"
@@ -166,9 +174,9 @@ resource "helm_release" "karpenter" {
     tolerations:
       - key: CriticalAddonsOnly
         operator: Exists
-      - key: karpenter.sh/controller
-        operator: Exists
-        effect: NoSchedule
+      # - key: karpenter.sh/controller
+      #   operator: Exists
+      #   effect: NoSchedule
     webhook:
       enabled: false
     EOT
@@ -266,12 +274,12 @@ module "eks_blueprints_addons" {
 
       values = [
         yamlencode({
-          tolerations = [{
-            key      = "karpenter.sh/controller"
-            operator = "Equal"
-            value    = "true"
-            effect   = "NoSchedule"
-          }]
+          # tolerations = [{
+          #   key      = "karpenter.sh/controller"
+          #   operator = "Equal"
+          #   value    = "true"
+          #   effect   = "NoSchedule"
+          # }]
           nodeSelector = {
             "karpenter.sh/controller" = "true"
           }
