@@ -70,6 +70,13 @@ spec:
         version: v1
     spec:
       serviceAccountName: bookinfo-details
+      tolerations:
+        - key: "karpenter.sh/controller"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      nodeSelector:
+        karpenter.sh/controller: "true"
       containers:
       - name: details
         image: docker.io/istio/examples-bookinfo-details-v1:1.20.3
@@ -121,6 +128,13 @@ spec:
         version: v1
     spec:
       serviceAccountName: bookinfo-ratings
+      tolerations:
+        - key: "karpenter.sh/controller"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      nodeSelector:
+        karpenter.sh/controller: "true"
       containers:
       - name: ratings
         image: docker.io/istio/examples-bookinfo-ratings-v1:1.20.3
@@ -172,6 +186,13 @@ spec:
         version: v1
     spec:
       serviceAccountName: bookinfo-reviews
+      tolerations:
+        - key: "karpenter.sh/controller"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      nodeSelector:
+        karpenter.sh/controller: "true"
       containers:
       - name: reviews
         image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
@@ -212,6 +233,13 @@ spec:
         version: v2
     spec:
       serviceAccountName: bookinfo-reviews
+      tolerations:
+        - key: "karpenter.sh/controller"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      nodeSelector:
+        karpenter.sh/controller: "true"
       containers:
       - name: reviews
         image: docker.io/istio/examples-bookinfo-reviews-v2:1.20.3
@@ -252,6 +280,13 @@ spec:
         version: v3
     spec:
       serviceAccountName: bookinfo-reviews
+      tolerations:
+        - key: "karpenter.sh/controller"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      nodeSelector:
+        karpenter.sh/controller: "true"
       containers:
       - name: reviews
         image: docker.io/istio/examples-bookinfo-reviews-v3:1.20.3
@@ -320,6 +355,13 @@ spec:
         version: v1
     spec:
       serviceAccountName: bookinfo-productpage
+      tolerations:
+        - key: "karpenter.sh/controller"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+      nodeSelector:
+        karpenter.sh/controller: "true"
       containers:
       - name: productpage
         image: docker.io/istio/examples-bookinfo-productpage-v1:1.20.3
