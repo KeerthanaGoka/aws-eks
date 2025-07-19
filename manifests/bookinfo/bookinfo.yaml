@@ -235,7 +235,6 @@ metadata:
 spec:
   ports:
   - port: 9080
-    type: LoadBalancer
     name: http
   selector:
     app: productpage
