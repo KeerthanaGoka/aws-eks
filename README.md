@@ -45,36 +45,46 @@ kubectl apply -f manifests/karpenter.yaml
 ```
 ### Terraform Deployment Summary
 
-From the main.tf, the following key components are provisioned:
+From the `main.tf`, the following key components are provisioned:
 
--EKS Cluster (v1.30) with a managed node group running Bottlerocket OS for Karpenter
--Karpenter autoscaler for dynamic, just-in-time compute provisioning
--Istio Service Mesh deployed via the EKS Blueprints Addons module:
---Istio Ingress Gateway
---Istiod
---Istio base components
--Argo CD for GitOps-based continuous deployment
--Helm releases for kube-state-metrics and karpenter
--Network rules to support Istio sidecar injection via ports 15012 and 15017
--Modular and production-ready infrastructure following AWS best practices
--This setup enables a scalable, observable, and secure Kubernetes platform with automated provisioning and continuous delivery.
+- **EKS Cluster (v1.30)** with a managed node group running Bottlerocket OS for Karpenter
+- **Karpenter autoscaler** for dynamic, just-in-time compute provisioning
+- **Istio Service Mesh** deployed via the EKS Blueprints Addons module:
+  - Istio Ingress Gateway  
+  - Istiod  
+  - Istio base components
+- **Argo CD** for GitOps-based continuous deployment
+- **Helm releases** for `kube-state-metrics` and `karpenter`
+- **Network rules** to support Istio sidecar injection via ports `15012` and `15017`
+- **Modular and production-ready infrastructure** following AWS best practices
+
+This setup enables a scalable, observable, and secure Kubernetes platform with automated provisioning and continuous delivery.
+
 
 
 ### Networking & IAM Overview
+
 This project provisions a secure and scalable AWS infrastructure using Terraform:
 
--VPC: A single VPC with CIDR 10.0.0.0/16 is created to isolate all Kubernetes resources.
--Subnets: 6 subnets across 3 Availability Zones:
---3 private subnets for EKS worker nodes
---3 public subnets for exposing internet-facing services (e.g., Istio ingress)
--Security Groups:
---For the EKS control plane
---For managed node groups, with custom ingress rules to support Istio webhook communication
--IAM Roles:
---EKS Cluster role for control plane operations
---Node group role for EKS managed nodes
---Karpenter node role for dynamic autoscaling
-These components ensure secure communication, isolated workloads, and flexible autoscaling capabilities.
+- **VPC**  
+  A single VPC with CIDR `10.0.0.0/16` is created to isolate all Kubernetes resources.
+
+- **Subnets**  
+  A total of **6 subnets** are created across **3 Availability Zones**:
+  -  3 private subnets for EKS worker nodes  
+  -  3 public subnets for exposing internet-facing services (e.g., Istio ingress)
+
+- **Security Groups**
+  - One security group for the EKS control plane
+  - One for managed node groups, with custom ingress rules to allow Istio webhook communication on ports `15012` and `15017`
+
+- **IAM Roles**
+  - EKS cluster IAM role for control plane operations
+  - Managed node group role for EKS worker nodes
+  - Karpenter node IAM role for dynamic autoscaling support
+
+These components collectively ensure secure communication, workload isolation, and scalable compute provisioning across the EKS cluster.
+
 
 ### Istio sidecar injection
 
