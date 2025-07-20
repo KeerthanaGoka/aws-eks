@@ -1,3 +1,29 @@
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+
+git config --global user.name "Keerthana Goka"
+git config --global user.email gkeerthana.sai@gmail.com
+git remote add origin https://github.com/KeerthanaGoka/aws-eks.git
+git push -u origin main
+--------------------------------------------------------------------
+
+ArgoCD
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+http://localhost:8080
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+
+Prometheus
+kubectl port-forward svc/prometheus 9090:9090 -n istio-system
+http://localhost:9090
+
+Grafana
+kubectl port-forward svc/grafana 3000:3000 -n istio-system
+http://localhost:3000
+
+---------------------------------------------------------------------------------
+
 #terraform
 
 #EKS & istio
@@ -5,11 +31,11 @@
 terraform init
 terraform apply --auto-approve
 
-kubectl apply -f manifests\karpenter.yaml
+kubectl apply -f manifests/karpenter.yaml
 kubectl rollout restart deployment istio-ingress -n istio-ingress
 
 
-
+---------------------------------------------------
 #Observability
 
 for ADDON in kiali jaeger prometheus grafana
@@ -28,7 +54,7 @@ kubectl port-forward svc/prometheus 9090:9090 -n istio-system
 kubectl port-forward svc/grafana 3000:3000 -n istio-system
 http://localhost:3000
 
-    
+
 # Visualize application traces via Jaeger
 kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 
@@ -36,29 +62,47 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 #Istio sidecar injection
 
 kubectl label namespace default istio-injection=enabled
-
+---------------------------------------------------------
 #ArgoCD
 
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm install argocd argo/argo-cd -n argocd --create-namespace
 
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
 http://localhost:8080
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 
 admin
-9gn4GV-mvJhBpJPP
-
-kubectl apply -f argocd/shopping-application.yaml
+WVGP5dc0xGz48G9Q
 
 
+helm uninstall argocd -n argocd
+kubectl delete namespace argocd
+
+--------------------------------------------------------
 #Microservices deploy:
+1.
 
 git clone https://github.com/aws-samples/istio-on-eks.git
 cp -r istio-on-eks/modules/01-getting-started microservices-chart
 
+kubectl apply -f manifests\argocd\chart.yaml
+kubectl delete -f manifests\argocd\chart.yaml
 helm install mesh-basic ./microservices-chart -n default 
 
+2.
+
+kubectl apply -f manifests\argocd\shopping-application.yaml
+kubectl apply -f manifests/shopping/frontendvs.yaml
+kubectl delete -f manifests\argocd\shopping-application.yaml
+
+3.
+
+kubectl apply -f manifests/argocd/bookinfodeploy.yaml
+kubectl delete -f manifests\argocd\bookinfodeploy.yaml
+------------------------------------------------------------------
 
 #destroy
 
