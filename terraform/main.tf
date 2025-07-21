@@ -229,14 +229,27 @@ module "eks_blueprints_addons" {
       name          = "istiod"
       namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
 
-      set = [
-        {
-          name  = "meshConfig.accessLogFile"
-          value = "/dev/stdout"
-        }
+      values = [
+        yamlencode({
+          meshConfig = {
+            accessLogFile = "/dev/stdout"
+            defaultConfig = {
+              proxyMetadata = {}
+              proxyResources = {
+                limits = {
+                  cpu    = "500m"
+                  memory = "512Mi"
+                }
+                requests = {
+                  cpu    = "100m"
+                  memory = "128Mi"
+                }
+              }
+            }
+          }
+        })
       ]
     }
-
     istio-ingress = {
       chart            = "gateway"
       chart_version    = local.istio_chart_version
