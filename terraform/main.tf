@@ -231,13 +231,11 @@ module "eks_blueprints_addons" {
 
       values = [
         yamlencode({
-          meshConfig = {
-            accessLogFile = "/dev/stdout "
-            defaultConfig = {
-              proxyMetadata = {}
-              proxyResources = {
+          global = {
+            proxy = {
+              resources = {
                 limits = {
-                  cpu    = "500m"
+                  cpu    = "750m"
                   memory = "512Mi"
                 }
                 requests = {
@@ -246,6 +244,9 @@ module "eks_blueprints_addons" {
                 }
               }
             }
+          }
+          meshConfig = {
+            accessLogFile = "/dev/stdout"
           }
         })
       ]
