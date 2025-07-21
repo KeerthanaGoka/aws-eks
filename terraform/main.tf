@@ -232,7 +232,7 @@ module "eks_blueprints_addons" {
       values = [
         yamlencode({
           meshConfig = {
-            accessLogFile = "/dev/stdout"
+            accessLogFile = "/dev/stdout "
             defaultConfig = {
               proxyMetadata = {}
               proxyResources = {
