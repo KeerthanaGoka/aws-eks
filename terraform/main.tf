@@ -235,8 +235,8 @@ module "eks_blueprints_addons" {
             proxy = {
               resources = {
                 limits = {
-                  cpu    = "750m"
-                  memory = "512Mi"
+                  cpu    = "250m"
+                  memory = "256Mi"
                 }
                 requests = {
                   cpu    = "100m"

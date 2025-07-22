@@ -24,6 +24,11 @@ http://localhost:3000
 
 ---------------------------------------------------------------------------------
 
+sum by (node) (kube_pod_container_resource_limits{resource="cpu", unit="core"}) #resourcelimits per node
+
+
+
+
 #terraform
 
 #EKS & istio
