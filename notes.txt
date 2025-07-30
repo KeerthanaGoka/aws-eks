@@ -48,7 +48,7 @@ K8S Dashboard:  15661
 ---------------------------------------------------------------------------------
 
 #destroy
-
+#Bash
 terraform destroy -target='module.eks_blueprints_addons.helm_release.this["istio-ingress"]' -auto-approve
 terraform destroy
 ---------------------------------------------------------------------------------

@@ -120,6 +120,23 @@ kubectl apply -f manifests/shopping/frontendvs.yaml
 Verify Istio Gateway and VirtualService are correctly configured to route external traffic to frontend service.
 
 ![Website Dashboard](./pictures/website.png)
+
+**Table: Ports exposed by all microservices in the demo application**
+
+| Service                | Service Port | Pod Port | Protocol     |
+|------------------------|--------------|----------|--------------|
+| emailservice           | 5000         | 8080     | gRPC         |
+| checkoutservice        | 5050         | 5050     | gRPC         |
+| recommendationservice  | 8080         | 8080     | gRPC         |
+| frontend               | 80           | 8080     | HTTP         |
+| paymentservice         | 50051        | 50051    | gRPC         |
+| productcatalogservice  | 3550         | 3550     | gRPC         |
+| cartservice            | 7070         | 7070     | gRPC         |
+| redis-cart             | 6379         | 6379     | TCP (Redis)  |
+| currencyservice        | 7000         | 7000     | gRPC         |
+| shippingservice        | 50051        | 50051    | gRPC         |
+| adservice              | 9555         | 9555     | gRPC         |
+ 
 ---
 
 ## Observability Dashboards
